@@ -8,7 +8,8 @@ Build a Python CLI alarm clock during a 30-minute exercise. Favor an understanda
 working vertical slice and evidence of validation over feature count.
 
 The user needs to set one alarm, see when it will fire, and receive an alert.
-The process runs in the foreground; no UI, database, service, or persistence.
+The process runs in the terminal in the foreground; no web interface, database,
+background service, or persistence.
 
 ## Acceptance criteria
 

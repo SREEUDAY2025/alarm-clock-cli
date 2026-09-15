@@ -1,6 +1,6 @@
 # Validation
 
-## Local checks — 2026-09-15
+## Initial implementation checks — 2026-09-15
 
 Environment: macOS, Python 3.14.5.
 
