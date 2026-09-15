@@ -47,3 +47,12 @@ not change in that workflow maintenance step.
   explicit plain output, and restoring the screen/cursor on completion or Ctrl+C.
 - The classic status panel was launched in macOS Terminal and its 90-column layout visually
   inspected. The screenshot in the README was captured from the running application.
+
+## Guided setup iteration — 2026-09-15
+
+- All 39 tests passed locally. Nine additional tests cover defaults, menu selection,
+  retrying invalid values, confirmation, quitting, EOF, Ctrl+C, and noninteractive input.
+- A real terminal session launched with no arguments, selected a timer, rejected
+  `0s`, accepted `1s`, collected a label and quiet mode, requested confirmation,
+  and completed the alarm successfully. Existing command-line modes still pass
+  their integration tests.

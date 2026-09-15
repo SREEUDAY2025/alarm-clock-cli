@@ -13,6 +13,18 @@ Requires **Python 3.10+**. Run these commands from the repository root. No insta
 API key, database, or third-party package is needed.
 
 ```sh
+python3 -m alarmclock
+```
+
+Choose **1** for a duration, **2** for a local-time alarm, or **3** for a five-second
+demo. Type a number and press Enter. Guided setup asks for a time, optional label,
+sound preference, and alert length, then shows a summary before starting. Press
+Enter to accept a displayed default. Mistakes are explained and can be corrected
+at the same prompt; type `q` at any step to cancel. The quick demo starts immediately.
+
+For a direct command, without prompts:
+
+```sh
 python3 -m alarmclock --in 5s --label "Stretch break" --ring-seconds 2
 ```
 
@@ -62,7 +74,9 @@ python3 -m alarmclock --help
 | `--plain` | Disable the dashboard and use simple terminal text |
 | `--ring-seconds N` | Alert duration, 1–60 seconds; default 10 |
 
-Exactly one of `--in` and `--at` is required. If a time has already passed, or
+When using flags, exactly one of `--in` and `--at` is required. Guided setup opens
+only when there are no arguments and both input and output are connected to a
+terminal, so scripts never unexpectedly wait for input. If a time has already passed, or
 equals the current time, the alarm is scheduled for tomorrow. Durations such as
 `90m` are valid; negative, fractional, and unitless durations are rejected.
 
@@ -70,9 +84,9 @@ Press **Ctrl+C** while waiting or ringing to stop cleanly.
 
 | Exit status | Meaning |
 | --- | --- |
-| `0` | Alarm completed, or help displayed |
+| `0` | Alarm completed, help displayed, or guided setup declined/quit |
 | `2` | Invalid command-line arguments |
-| `130` | Interrupted with Ctrl+C |
+| `130` | Alarm or guided setup interrupted with Ctrl+C |
 
 ## Design
 
@@ -82,7 +96,7 @@ written down with AI assistance before coding: [design and plan](docs/DESIGN.md)
 ```text
 alarmclock/
   __main__.py  Module entry point
-  cli.py       Arguments, clock selection, countdown, alert, cancellation
+  cli.py       Guided setup, arguments, clock selection, alert, cancellation
   core.py      Duration parsing, next local occurrence, wait loop
   display.py   Responsive ANSI terminal dashboard and terminal capability checks
 tests/
@@ -90,6 +104,7 @@ tests/
   test_cli.py          CLI behavior and clock selection
   test_integration.py  Actual processes, elapsed time, and POSIX SIGINT
   test_display.py      Plain fallback, small terminals, and screen/cursor cleanup
+  test_setup.py        Guided choices, defaults, retries, confirmation, cancellation
 ```
 
 - **Duration alarms use `time.monotonic()`.** Moving the system clock does not
@@ -110,13 +125,15 @@ tests/
 python3 -m unittest discover -v
 ```
 
-The suite contains **30 tests**, including parameterized invalid-input cases.
+The suite contains **39 tests**, including parameterized invalid-input cases.
 It checks parsing, midnight/year rollover, exact-time behavior, fractional waits,
 forward/backward clock changes, correct clock selection, bounded ringing, quiet
 output, and cancellation. Integration tests launch the real CLI; one waits for a
 one-second alarm and one-second alert. POSIX signal testing is skipped on Windows;
 mocked cancellation tests still run there. Dashboard tests also check plain-output
 preferences, compact layout, and restoring the cursor and screen after interruption.
+Guided setup tests cover defaults, correcting invalid entries, demo selection,
+declining confirmation, quit/EOF/Ctrl+C, and never prompting for redirected input.
 
 GitHub Actions is configured for Python 3.10 and 3.14 on Linux, and Python 3.14
 on macOS and Windows. See [validation notes](docs/VALIDATION.md) for local evidence

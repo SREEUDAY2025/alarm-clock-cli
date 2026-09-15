@@ -88,3 +88,15 @@ The dashboard uses the alternate terminal screen and restores screen/cursor stat
 in a `finally` block, including on Ctrl+C. New tests verify those cleanup and
 fallback behaviors. This refinement was requested after the initial implementation;
 it was not part of the pre-code plan above.
+
+## Guided setup refinement
+
+The candidate asked how a first-time user would discover the options without knowing
+flags. Running with no arguments in an interactive terminal now offers three numbered
+choices: duration, local time, or a five-second demo. Duration and local-time setup
+collect a label, sound preference, and alert length and request confirmation before
+starting. Invalid entries retry in place; q, EOF, and Ctrl+C cancel cleanly.
+
+The setup function returns normal CLI arguments and uses the existing validators.
+It does not implement another scheduler. The same parser and execution path serve
+guided and direct commands. Noninteractive invocations never open prompts.

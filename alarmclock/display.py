@@ -54,6 +54,19 @@ def clock_text(remaining: float) -> str:
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 
+def setup_header() -> None:
+    """A restrained welcome screen; numbered choices work in any terminal."""
+    color = supports_dashboard()
+    bold, dim, accent, reset = (BOLD, DIM, ACCENT, RESET) if color else ("", "", "", "")
+    print(f"\n  {bold}>_ alarmclock{reset}")
+    print(f"  {dim}A simple alarm, right here in your terminal.{reset}\n")
+    print(f"  {accent}1{reset}  Timer        Ring after a duration, like 10 minutes")
+    print(f"  {accent}2{reset}  Alarm        Ring at a local time, like 07:30")
+    print(f"  {accent}3{reset}  Quick demo   Start a 5-second alarm\n")
+    print(f"  {dim}Type a number, then Enter. Defaults are in [brackets].")
+    print(f"  Type q at any step to quit.{reset}\n", flush=True)
+
+
 class Dashboard:
     def __init__(self, label: str, target: datetime, total: float, quiet: bool):
         self.label = label

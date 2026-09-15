@@ -43,3 +43,9 @@ countdown display, progress, alarm status, and a plain-output option. The candid
 refined the direction to a classic terminal layout with restrained colors. Seven
 additional tests cover dashboard cleanup and fallbacks, bringing the suite to 30.
 The implementation retains its original scheduling logic and no-dependency design.
+
+The candidate subsequently questioned how a new user would discover and select
+options. Guided setup was added for an interactive no-argument launch, with clear
+numbered choices, defaults, retryable validation, and confirmation. It delegates
+to the existing command parser and scheduler. Nine additional tests bring the
+suite to 39; the original command-line flags continue to work.
