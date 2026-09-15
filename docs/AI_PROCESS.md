@@ -34,3 +34,12 @@ decisions or changes in their own words. No candidate review is asserted here.
 The candidate chose to record an explanation after the build. Such a recording
 is a retrospective walkthrough, not footage of the original coding session.
 The planned 30-minute allocation is not evidence of measured build time.
+
+## Later terminal design iteration
+
+The candidate then requested a more polished visual interface and reiterated that
+it must remain inside the CLI. Codex added a separate terminal renderer, responsive
+countdown display, progress, alarm status, and a plain-output option. The candidate
+refined the direction to a classic terminal layout with restrained colors. Seven
+additional tests cover dashboard cleanup and fallbacks, bringing the suite to 30.
+The implementation retains its original scheduling logic and no-dependency design.

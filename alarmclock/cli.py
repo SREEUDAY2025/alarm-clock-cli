@@ -7,6 +7,7 @@ import time
 from datetime import datetime, timedelta
 
 from .core import next_occurrence, parse_duration, wait_until
+from .display import Dashboard, supports_dashboard
 
 
 def ring_seconds(value: str) -> int:
@@ -56,6 +57,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="show the alarm without sounding the terminal bell",
     )
     parser.add_argument(
+        "--plain", action="store_true",
+        help="use simple text instead of the terminal status panel",
+    )
+    parser.add_argument(
         "--ring-seconds", type=ring_seconds, default=10, metavar="1-60",
         help="alert length in seconds (default: 10)",
     )
@@ -82,6 +87,7 @@ def run(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
             deadline = target.timestamp()
             # Display the OS-resolved time, including its UTC offset around DST.
             resolved = datetime.fromtimestamp(deadline).astimezone()
+            target = resolved
             schedule = f"at {resolved:%Y-%m-%d %H:%M:%S %Z (%z)}"
     except ValueError as exc:
         parser.error(str(exc))
@@ -90,16 +96,30 @@ def run(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
     print("Keep this process running. Press Ctrl+C to cancel or stop the alert.", flush=True)
     if not args.quiet:
         print("Sound uses the terminal bell; your terminal may mute it.", flush=True)
-    interactive = sys.stdout.isatty()
-    kwargs = {"on_tick": countdown} if interactive else {}
-    wait_until(deadline, clock=clock, **kwargs)
-    if interactive:
-        print("\r" + " " * 60 + "\r", end="", flush=True)
-    print(f"ALARM! {args.label}", flush=True)
-    for _ in range(args.ring_seconds):
-        if not args.quiet:
-            print("\a", end="", flush=True)
-        time.sleep(1)
+    dashboard = None
+    if not args.plain and supports_dashboard():
+        dashboard = Dashboard(args.label, target, deadline - clock(), args.quiet)
+    try:
+        if dashboard:
+            dashboard.open()
+        tick = dashboard.draw if dashboard else countdown
+        kwargs = {"on_tick": tick} if sys.stdout.isatty() else {}
+        wait_until(deadline, clock=clock, **kwargs)
+        if not dashboard:
+            if sys.stdout.isatty():
+                print("\r" + " " * 60 + "\r", end="", flush=True)
+            print(f"ALARM! {args.label}", flush=True)
+        for _ in range(args.ring_seconds):
+            if dashboard:
+                dashboard.draw(0, ringing=True)
+            if not args.quiet:
+                print("\a", end="", flush=True)
+            time.sleep(1)
+    finally:
+        if dashboard:
+            dashboard.close()
+    if dashboard:
+        print(f"ALARM! {args.label}", flush=True)
     print("Alarm finished.", flush=True)
     return 0
 

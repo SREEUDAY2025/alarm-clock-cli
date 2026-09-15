@@ -72,3 +72,18 @@ The candidate supplied the exercise brief. Codex proposed this scope and design,
 and will generate implementation, tests, and documentation. The candidate should
 review those outputs and explain the decisions they accept or change in their
 own recording. This document records design rationale; it is not a screen recording.
+
+## Presentation refinement after the initial build
+
+The candidate subsequently requested a more polished interface, explicitly keeping
+everything inside the CLI. A separate `display.py` renderer now provides a responsive
+compact status panel with a countdown, progress, local/scheduled time, and a distinct
+alarm state. The requested style is a restrained, classic terminal interface.
+It uses standard ANSI terminal controls and no additional dependencies.
+The original two scheduling modes and foreground lifecycle remain the same.
+
+`--plain` and terminal capability checks provide simple output when appropriate.
+The dashboard uses the alternate terminal screen and restores screen/cursor state
+in a `finally` block, including on Ctrl+C. New tests verify those cleanup and
+fallback behaviors. This refinement was requested after the initial implementation;
+it was not part of the pre-code plan above.

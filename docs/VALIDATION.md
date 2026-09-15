@@ -39,3 +39,11 @@ not change in that workflow maintenance step.
   limitations, not validated reliability guarantees.
 - Windows console Ctrl+C is covered by mocked handler tests; the real SIGINT
   subprocess test runs only on POSIX systems.
+
+## Terminal presentation iteration — 2026-09-15
+
+- All 30 tests passed locally after adding the dashboard. Seven new tests cover
+  countdown formatting, redirected output, color preferences, small windows,
+  explicit plain output, and restoring the screen/cursor on completion or Ctrl+C.
+- The classic status panel was launched in macOS Terminal and its 90-column layout visually
+  inspected. The screenshot in the README was captured from the running application.

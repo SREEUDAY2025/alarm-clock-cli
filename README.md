@@ -2,6 +2,10 @@
 
 A small, dependency-free Python alarm clock. Set one alarm after a duration or at
 a local time, see a live countdown, and receive a visible alert with a terminal bell.
+The terminal interface uses a compact status panel, a live countdown, and a subtle
+progress indicator, all rendered using Python's standard library.
+
+![Alarm clock running inside macOS Terminal](docs/terminal-preview.png)
 
 ## Run
 
@@ -14,6 +18,8 @@ python3 -m alarmclock --in 5s --label "Stretch break" --ring-seconds 2
 
 On Windows, use `py -3` instead of `python3` if needed.
 
+Plain mode (`--plain`) looks like this:
+
 ```text
 Alarm set in 5 seconds (about <local date and time> local): Stretch break
 Keep this process running. Press Ctrl+C to cancel or stop the alert.
@@ -23,8 +29,11 @@ ALARM! Stretch break
 Alarm finished.
 ```
 
-The countdown updates on one line in an interactive terminal. Redirected output
-contains only the schedule and status messages.
+The dashboard adapts to smaller terminal windows and restores the original screen
+and cursor when it exits. Use `--plain` for a simple one-line countdown. `NO_COLOR`,
+`TERM=dumb`, redirected output, unsupported text encodings, and Windows consoles
+outside Windows Terminal automatically use simple output. Redirected output
+contains only the schedule and status messages, with no screen-control sequences.
 
 ## Usage
 
@@ -50,6 +59,7 @@ python3 -m alarmclock --help
 | `--at HH:MM[:SS]` | Local 24-hour time, with two digits per component |
 | `--label TEXT` | Visible message, 1–80 printable characters; default `Alarm` |
 | `--quiet` | Disable the bell; the visible alert and alert duration remain |
+| `--plain` | Disable the dashboard and use simple terminal text |
 | `--ring-seconds N` | Alert duration, 1–60 seconds; default 10 |
 
 Exactly one of `--in` and `--at` is required. If a time has already passed, or
@@ -74,10 +84,12 @@ alarmclock/
   __main__.py  Module entry point
   cli.py       Arguments, clock selection, countdown, alert, cancellation
   core.py      Duration parsing, next local occurrence, wait loop
+  display.py   Responsive ANSI terminal dashboard and terminal capability checks
 tests/
   test_core.py         Parsing and timing with a fake clock
   test_cli.py          CLI behavior and clock selection
   test_integration.py  Actual processes, elapsed time, and POSIX SIGINT
+  test_display.py      Plain fallback, small terminals, and screen/cursor cleanup
 ```
 
 - **Duration alarms use `time.monotonic()`.** Moving the system clock does not
@@ -98,12 +110,13 @@ tests/
 python3 -m unittest discover -v
 ```
 
-The suite contains **23 tests**, including parameterized invalid-input cases.
+The suite contains **30 tests**, including parameterized invalid-input cases.
 It checks parsing, midnight/year rollover, exact-time behavior, fractional waits,
 forward/backward clock changes, correct clock selection, bounded ringing, quiet
 output, and cancellation. Integration tests launch the real CLI; one waits for a
 one-second alarm and one-second alert. POSIX signal testing is skipped on Windows;
-mocked cancellation tests still run there.
+mocked cancellation tests still run there. Dashboard tests also check plain-output
+preferences, compact layout, and restoring the cursor and screen after interruption.
 
 GitHub Actions is configured for Python 3.10 and 3.14 on Linux, and Python 3.14
 on macOS and Windows. See [validation notes](docs/VALIDATION.md) for local evidence
