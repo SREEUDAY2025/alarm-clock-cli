@@ -22,7 +22,7 @@ class CliTests(unittest.TestCase):
         for argv in [[], ["--in", "1s", "--at", "07:30"], ["--in", "0s"], ["--at", "25:00"],
                      ["--in", "1s", "--ring-seconds", "0"], ["--in", "1s", "--ring-seconds", "61"],
                      ["--in", "1s", "--ring-seconds", "abc"], ["--in", "1s", "--label", "\x1b[2J"]]:
-            with self.subTest(argv=argv), contextlib.redirect_stderr(io.StringIO()):
+            with self.subTest(argv=argv), contextlib.redirect_stderr(io.StringIO()), patch("sys.stdin.isatty", return_value=False):
                 with self.assertRaises(SystemExit) as result:
                     main(argv)
                 self.assertEqual(result.exception.code, 2)

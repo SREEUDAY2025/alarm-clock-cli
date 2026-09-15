@@ -200,7 +200,11 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if not arguments and sys.stdin.isatty() and sys.stdout.isatty():
             setting_up = True
-            arguments = guided_setup()
+            if supports_dashboard():
+                from .setup_ui import setup
+                arguments = setup()
+            else:
+                arguments = guided_setup()
             if arguments is None:
                 print("Setup cancelled. No alarm was started.", flush=True)
                 return 0

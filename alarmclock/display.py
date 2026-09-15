@@ -76,7 +76,7 @@ class Dashboard:
 
     def open(self) -> None:
         # Keep shell history intact and restore it even when interrupted.
-        print("\033[?1049h\033[?25l\033[2J", end="", flush=True)
+        print("\033[?1049h\033[?25l\033[48;2;0;0;0m\033[2J", end="", flush=True)
 
     def close(self) -> None:
         print(RESET + "\033[?25h\033[?1049l", end="", flush=True)
@@ -129,4 +129,4 @@ class Dashboard:
         for line in lines[:max(1, size.lines - 1)]:
             output.append("\033[2K" + ("  " if not compact else "") + line + "\n")
         output.append("\033[J")
-        print("".join(output), end="", flush=True)
+        print("".join(output).replace(RESET, RESET + "\033[48;2;0;0;0m"), end="", flush=True)

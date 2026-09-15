@@ -49,3 +49,9 @@ options. Guided setup was added for an interactive no-argument launch, with clea
 numbered choices, defaults, retryable validation, and confirmation. It delegates
 to the existing command parser and scheduler. Nine additional tests bring the
 suite to 39; the original command-line flags continue to work.
+
+The candidate then tried setup and found that too many prompts delayed the task.
+They asked for multiple-choice navigation and a clean terminal panel immediately
+at launch. Codex added arrow-key selection, timer presets, in-place editing, and
+optional settings while retaining the same CLI parser and scheduler. This was
+a further iteration after the initial build.

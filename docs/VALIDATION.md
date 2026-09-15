@@ -56,3 +56,18 @@ not change in that workflow maintenance step.
   `0s`, accepted `1s`, collected a label and quiet mode, requested confirmation,
   and completed the alarm successfully. Existing command-line modes still pass
   their integration tests.
+
+## Keyboard setup iteration - 2026-09-15
+
+- All 48 tests passed locally in a terminal. Nine new tests cover arrow navigation,
+  presets, custom values, options, edit validation, cancellation, and shared parsing.
+- Fixed the invalid-arguments test to explicitly simulate noninteractive input;
+  running the suite in a real terminal previously opened setup during that test.
+- A real pseudo-terminal check navigated with arrow keys, completed the five-second
+  demo, and verified original input settings and alternate-screen restoration.
+  A separate real SIGINT check verified the same cleanup during setup cancellation.
+- Visually inspected the launch panel in macOS Terminal, including the explicit
+  black background and highlighted selection. The README preview is an actual
+  screenshot of the running application.
+- Windows keyboard input is implemented but has not been manually exercised here.
+  Automated UI tests simulate key events; CI is not a manual terminal visual test.

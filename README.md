@@ -5,6 +5,8 @@ a local time, see a live countdown, and receive a visible alert with a terminal 
 The terminal interface uses a compact status panel, a live countdown, and a subtle
 progress indicator, all rendered using Python's standard library.
 
+![Keyboard setup inside macOS Terminal](docs/setup-preview.png)
+
 ![Alarm clock running inside macOS Terminal](docs/terminal-preview.png)
 
 ## Run
@@ -16,11 +18,18 @@ API key, database, or third-party package is needed.
 python3 -m alarmclock
 ```
 
-Choose **1** for a duration, **2** for a local-time alarm, or **3** for a five-second
-demo. Type a number and press Enter. Guided setup asks for a time, optional label,
-sound preference, and alert length, then shows a summary before starting. Press
-Enter to accept a displayed default. Mistakes are explained and can be corrected
-at the same prompt; type `q` at any step to cancel. The quick demo starts immediately.
+The terminal opens directly into a selection panel. Use **Up/Down + Enter**, or
+press a displayed number, to choose Timer, Alarm, or Quick demo.
+
+- **Timer:** choose 5, 10, or 25 minutes, or enter a custom duration; select Start.
+- **Alarm:** enter a local time, then select Start.
+- **Quick demo:** starts a five-second alarm immediately.
+- **Options:** change the label, sound, or alert length when needed. Defaults let
+  you start without answering extra questions.
+
+**Esc** goes back; **Ctrl+C** quits. The selected row is highlighted, edits happen
+in place, and the original terminal screen and input mode are restored afterward.
+Terminals without dashboard support use the original numbered text prompts.
 
 For a direct command, without prompts:
 
@@ -97,6 +106,7 @@ written down with AI assistance before coding: [design and plan](docs/DESIGN.md)
 alarmclock/
   __main__.py  Module entry point
   cli.py       Guided setup, arguments, clock selection, alert, cancellation
+  setup_ui.py  Keyboard selection, in-place edits, terminal input cleanup
   core.py      Duration parsing, next local occurrence, wait loop
   display.py   Responsive ANSI terminal dashboard and terminal capability checks
 tests/
@@ -104,7 +114,8 @@ tests/
   test_cli.py          CLI behavior and clock selection
   test_integration.py  Actual processes, elapsed time, and POSIX SIGINT
   test_display.py      Plain fallback, small terminals, and screen/cursor cleanup
-  test_setup.py        Guided choices, defaults, retries, confirmation, cancellation
+  test_setup.py        Plain guided setup and cancellation
+  test_setup_ui.py     Keyboard selection, options, edits, and shared execution
 ```
 
 - **Duration alarms use `time.monotonic()`.** Moving the system clock does not
@@ -125,7 +136,7 @@ tests/
 python3 -m unittest discover -v
 ```
 
-The suite contains **39 tests**, including parameterized invalid-input cases.
+The suite contains **48 tests**, including parameterized invalid-input cases.
 It checks parsing, midnight/year rollover, exact-time behavior, fractional waits,
 forward/backward clock changes, correct clock selection, bounded ringing, quiet
 output, and cancellation. Integration tests launch the real CLI; one waits for a

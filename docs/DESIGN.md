@@ -100,3 +100,17 @@ starting. Invalid entries retry in place; q, EOF, and Ctrl+C cancel cleanly.
 The setup function returns normal CLI arguments and uses the existing validators.
 It does not implement another scheduler. The same parser and execution path serve
 guided and direct commands. Noninteractive invocations never open prompts.
+
+## Keyboard setup refinement
+
+After trying the guided prompts, the candidate found the required sequence too long
+and asked for selectable choices and the status-panel presentation from launch.
+Supported terminals now open a keyboard-driven selection panel immediately. Timer
+presets and a quick demo reduce entry work; label, sound, and alert length live in
+Options instead of mandatory prompts. A review with Start remains explicit.
+
+`setup_ui.py` handles keyboard input and rendering, returning the same ordinary CLI
+arguments. POSIX input mode and alternate-screen state are restored in a context
+manager; Windows Terminal uses the standard-library keyboard API. The original
+text prompts remain the fallback for terminals without dashboard support. This
+is a later usability iteration, not part of the original 30-minute scope.

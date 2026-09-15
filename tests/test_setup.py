@@ -52,7 +52,7 @@ class SetupTests(unittest.TestCase):
     def invoke_terminal(self, answers):
         output = TerminalOutput()
         with contextlib.redirect_stdout(output), patch("sys.stdin.isatty", return_value=True):
-            with patch("builtins.input", side_effect=answers), patch("alarmclock.cli.run") as run:
+            with patch("builtins.input", side_effect=answers), patch("alarmclock.cli.run") as run, patch("alarmclock.cli.supports_dashboard", return_value=False):
                 status = main([])
         return status, output.getvalue(), run
 
