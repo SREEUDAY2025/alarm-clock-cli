@@ -27,6 +27,12 @@ The workflow runs the suite on Linux (Python 3.10 and 3.14), macOS (3.14), and
 Windows (3.14). A configured workflow alone is not evidence of a passing run;
 check the repository's Actions tab for the results of the published commit.
 
+[The initial published run](https://github.com/SREEUDAY2025/alarm-clock-cli/actions/runs/34950788327)
+passed all four jobs for commit `2c1e188`. GitHub reported deprecated runtime
+warnings for the original checkout/setup actions; those action references were
+subsequently updated to the current official release tags. Application code did
+not change in that workflow maintenance step.
+
 ## Remaining boundaries
 
 - Sleep/wake delivery and OS-specific daylight-saving disambiguation are documented
